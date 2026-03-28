@@ -26,9 +26,9 @@ class UserRepository:
         return new_user
 
     def verify_user(self, email: str, username: str, password: str) -> User:
-        stmt = self.session.scalar(select(User).where(User.email == email))
+        stmt = self.session.scalar(select(User).where(User.email == email |
+                                 User.username == username))
         return (stmt and stmt.username == username
-        and stmt.password == password
         and stmt.email == email)
 
     def delete_user(self, user_id: int) -> bool:

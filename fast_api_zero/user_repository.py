@@ -13,8 +13,9 @@ class UserRepository:
         stmt = self.session.scalar(select(User).where(User.id == user_id))
         return stmt
 
-    def get_user_by_email(self, email: str) -> User:
-        stmt = self.session.scalar(select(User).where(User.email == email))
+    def get_user_by_username(self, username: str) -> User:
+        stmt = self.session.scalar(select(User).where(
+            User.username == username))
         return stmt
 
     def get_all_users(self) -> list[User]:

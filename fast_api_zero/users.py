@@ -25,7 +25,7 @@ def create_user(
         new_user = repository.create_user(
             username=user.username,
             email=user.email,
-            password=get_password_hash(user.password)
+            password=get_password_hash(user.password),
         )
         return UserDB(
             id=new_user.id,
@@ -79,9 +79,11 @@ def update_user(
     repository: UserRepository = Depends(get_user_repository),
 ):
     try:
-        return repository.update_user(user_id=user_id,
-                username=user.username,
-                email=user.email,
-                password=get_password_hash(user.password))
+        return repository.update_user(
+            user_id=user_id,
+            username=user.username,
+            email=user.email,
+            password=get_password_hash(user.password),
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

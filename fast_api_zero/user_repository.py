@@ -14,8 +14,9 @@ class UserRepository:
         return stmt
 
     def get_user_by_username(self, username: str) -> User:
-        stmt = self.session.scalar(select(User).where(
-            User.username == username))
+        stmt = self.session.scalar(
+            select(User).where(User.username == username)
+        )
         return stmt
 
     def get_all_users(self) -> list[User]:
@@ -48,17 +49,15 @@ class UserRepository:
         email: str = None,
         password: str = None,
     ) -> User:
-        db_user = self.session.scalar(
-            select(User).where(User.id == user_id)
-    )
+        db_user = self.session.scalar(select(User).where(User.id == user_id))
         if not db_user:
             raise ValueError('User not found')
 
         update_data = {
-            "username": username,
-            "email": email,
-            "password": password
-    }
+            'username': username,
+            'email': email,
+            'password': password,
+        }
 
         for key, value in update_data.items():
             if value is not None:

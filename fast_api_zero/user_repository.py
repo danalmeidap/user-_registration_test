@@ -13,6 +13,10 @@ class UserRepository:
         stmt = self.session.scalar(select(User).where(User.id == user_id))
         return stmt
 
+    def get_user_by_email(self, email: str) -> User:
+        stmt = self.session.scalar(select(User).where(User.email == email))
+        return stmt
+
     def get_all_users(self) -> list[User]:
         stmt = self.session.scalars(select(User)).all()
         return stmt

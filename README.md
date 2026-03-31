@@ -42,10 +42,10 @@ Para utilizar basta clonar o repositório e usar o comando abaixo:
 
 
 
-## Funcionalidas
+## Funcionalidades
 
-[x] Cadastra um usuário
-[x] Verificia duplicidade
-[x] Modifica um usuário
-[x] Busca usuario
-[x] Lista Usuários correntes
+- [x] Cadastrar um usuário
+- [x] Verificar duplicidade
+- [x] Modificar um usuário
+- [x] Buscar usuário
+- [x] Listar usuários correntes

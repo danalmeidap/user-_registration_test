@@ -18,18 +18,17 @@ def get_user_repository(
 def create_user(
     user: UserSchema, repository: UserRepository = Depends(get_user_repository)
 ):
-    new_user = repository.create_user(
-        username=user.username, email=user.email, password=user.password
-    )
     try:
+        new_user = repository.create_user(
+            username=user.username, email=user.email, password=user.password
+        )
         return UserDB(
-        id=new_user.id,
-        username=new_user.username,
-        email=new_user.email,
-        created_at=new_user.created_at,
-        updated_at=new_user.updated_at,
-    )
-
+            id=new_user.id,
+            username=new_user.username,
+            email=new_user.email,
+            created_at=new_user.created_at,
+            updated_at=new_user.updated_at,
+        )
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -68,23 +67,13 @@ def delete_user(
         )
 
 
-@router.put('/{user_id}/', response_model=UserDB)
+@router.put('/{user_id}', response_model=UserDB)
 def update_user(
     user_id: int,
     user: UserSchema,
     repository: UserRepository = Depends(get_user_repository),
 ):
     try:
-        updated_user = repository.update_user(
-        user_id=user_id,
-        username=user.username,
-        email=user.email,
-        password=user.password,
-    )
-    except HTTPException:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='User not found'
-        )
-    finally:
-        return UserDB(**updated_user.__dict__)
+        return repository.update_user(user_id=user_id, **user.model_dump())
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))

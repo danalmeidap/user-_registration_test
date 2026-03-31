@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from fast_api_zero.models import User
@@ -17,19 +18,15 @@ class UserRepository:
         return stmt
 
     def create_user(self, username: str, email: str, password: str) -> User:
-        if self.verify_user(email, username, password):
-            raise ValueError('User already exists')
         new_user = User(username=username, email=email, password=password)
-        self.session.add(new_user)
-        self.session.commit()
-        self.session.refresh(new_user)
+        try:
+            self.session.add(new_user)
+            self.session.commit()
+            self.session.refresh(new_user)
+        except IntegrityError:
+            self.session.rollback()
+            raise ValueError('Failed to create user')
         return new_user
-
-    def verify_user(self, email: str, username: str, password: str) -> User:
-        stmt = self.session.scalar(select(User).where(User.email == email |
-                                 User.username == username))
-        return (stmt and stmt.username == username
-        and stmt.email == email)
 
     def delete_user(self, user_id: int) -> bool:
         user = self.get_user_by_id(user_id)
@@ -39,19 +36,29 @@ class UserRepository:
             return True
         return False
 
-    def update_user(self, user_id: int,
-                    username: str = None,
-                    email: str = None,
-                    password: str = None) -> User:
-        user = self.get_user_by_id(user_id)
-        if not user:
-            return None
-        if username:
-            user.username = username
-        if email:
-            user.email = email
-        if password:
-            user.password = password
+    def update_user(
+        self,
+        user_id: int,
+        username: str = None,
+        email: str = None,
+        password: str = None,
+    ) -> User:
+        db_user = self.session.scalar(
+            select(User).where(User.id == user_id)
+    )
+        if not db_user:
+            raise ValueError('User not found')
+
+        update_data = {
+            "username": username,
+            "email": email,
+            "password": password
+    }
+
+        for key, value in update_data.items():
+            if value is not None:
+                setattr(db_user, key, value)
+        self.session.add(db_user)
         self.session.commit()
-        self.session.refresh(user)
-        return user
+        self.session.refresh(db_user)
+        return db_user

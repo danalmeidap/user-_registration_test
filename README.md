@@ -1,6 +1,8 @@
-# User Management API 🚀
+
+# User Management API 
 
 API robusta para gerenciamento de usuários desenvolvida com **FastAPI**, utilizando **SQLAlchemy/SQLModel** para persistência e um pipeline completo de testes e qualidade.
+
 
 ## 🛠 Tecnologias e Ferramentas
 
@@ -10,22 +12,40 @@ API robusta para gerenciamento de usuários desenvolvida com **FastAPI**, utiliz
 * **Qualidade de Código:** **Ruff** (Linter/Formatter) e **Pytest** (Testes Automatizados).
 * **Gerenciamento de Dependências:** `pyproject.toml`.
 
+
 ## 🔧 Instalação e Ambiente
 
 Este projeto utiliza o padrão moderno de configuração via `pyproject.toml`.
 
+
+
+## Como rodar
+
+Para utilizar basta clonar o repositório e usar o comando abaixo:
+
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/seu-usuario/nome-do-projeto.git](https://github.com/seu-usuario/nome-do-projeto.git)
-   cd nome-do-projeto
+    git clone [https://github.com/seu-usuario/nome-do-projeto.git](https://github.com/seu-usuario/nome-do-projeto.git)
+    cd nome-do-projeto
 
 2. **Crie e ative o ambiente virtual:**
-   '''bash
-  python -m venv .venv
-  # Windows:
+   ```bash
+      python -m venv .venv
+    # Windows:
         .venv\Scripts\activate
-  # Linux/Mac:
+    # Linux/Mac:
      source .venv/bin/activate
 
 3. **Instale as deoendências**
-   pip install -e ".[dev]"
+   ```bash
+     pip install -e .[dev]
+
+
+
+## Funcionalidas
+
+[x] Cadastra um usuário
+[x] Verificia duplicidade
+[x] Modifica um usuário
+[x] Busca usuario
+[x] Lista Usuários correntes

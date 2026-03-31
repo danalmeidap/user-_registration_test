@@ -2,10 +2,13 @@ from contextlib import _GeneratorContextManager
 from dataclasses import asdict
 from datetime import datetime, timezone
 
+import pytest
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from fast_api_zero.models import User
+from fast_api_zero.user_repository import UserRepository
 
 
 def test_create_user_db(
@@ -30,6 +33,40 @@ def test_create_user_db(
     assert isinstance(user_dict['updated_at'], datetime)
 
     assert user_dict['created_at'] == time
+
+
+def test_create_user_repository_integrity_error(session):
+    data = {'username': 'dan', 'email': 'dan@aracaju.com', 'password': '123'}
+    repo = UserRepository(session)
+    repo.create_user(**data)
+    with pytest.raises(ValueError, match='Failed to create user'):
+        repo.create_user(**data)
+
+
+def test_create_user_duplicate_user(session: Session):
+    user = User(username='bob', password='secret', email='bob@test')
+    session.add(user)
+    session.commit()
+    duplicate_user = User(username='bob', password='secret', email='bob@test')
+    session.add(duplicate_user)
+    with pytest.raises(IntegrityError):
+        session.commit()
+
+
+def test_create_user_invalid_data(session: Session):
+    invalid_user = User(username=None, password='secret', email='invalid@test')
+    session.add(invalid_user)
+    with pytest.raises(IntegrityError):
+        session.commit()
+
+
+def create_user_duplicate_email(session: Session):
+    user1 = User(username='user1', password='secret', email='duplicate@test')
+    user2 = User(username='user2', password='secret', email='duplicate@test')
+    session.add(user1)
+    session.add(user2)
+    with pytest.raises(IntegrityError):
+        session.commit()
 
 
 def test_get_user_by_id_db(session: Session):
@@ -129,3 +166,9 @@ def test_update_user_not_found_db(session: Session):
     fake_indice = 999
     user = session.scalar(select(User).where(User.id == fake_indice))
     assert user is None
+
+
+def test_update_user_not_found(session):
+    repo = UserRepository(session)
+    with pytest.raises(ValueError, match='User not found'):
+        repo.update_user(user_id=999, username='new_name')

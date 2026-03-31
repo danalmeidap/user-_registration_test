@@ -44,10 +44,10 @@ Para utilizar basta clonar o repositório e usar o comando abaixo:
 
 ## Funcionalidas
 
-[x] Cadastra um usuário
-[x] Verifica duplicidade
-[x] Modifica um usuário
-[x] Busca usuario
-[x] Lista Usuários
-[x] Autentica Usuário
-[x] Criação de Token por usuário com tempo determinado
+- [x] Cadastra um usuário
+- [x] Verifica duplicidade
+- [x] Modifica um usuário
+- [x] Busca usuario
+- [x] Lista Usuários
+- [x] Autentica Usuário
+- [x] Criação de Token por usuário com tempo determinado

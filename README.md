@@ -11,7 +11,7 @@ API robusta para gerenciamento de usuários desenvolvida com **FastAPI**, utiliz
 * **Banco de Dados:** SQLite (Desenvolvimento) com suporte a migrações via **Alembic**.
 * **Qualidade de Código:** **Ruff** (Linter/Formatter) e **Pytest** (Testes Automatizados).
 * **Gerenciamento de Dependências:** `pyproject.toml`.
-
+* **Segurança e Autenticação:**  `JWT com criptografia HS256`.
 
 ## 🔧 Instalação e Ambiente
 
@@ -45,7 +45,9 @@ Para utilizar basta clonar o repositório e usar o comando abaixo:
 ## Funcionalidas
 
 [x] Cadastra um usuário
-[x] Verificia duplicidade
+[x] Verifica duplicidade
 [x] Modifica um usuário
 [x] Busca usuario
-[x] Lista Usuários correntes
+[x] Lista Usuários
+[x] Autentica Usuário
+[x] Criação de Token por usuário com tempo determinado

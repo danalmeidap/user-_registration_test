@@ -7,7 +7,7 @@ API robusta para gerenciamento de usuários desenvolvida com **FastAPI**, utiliz
 ## 🛠 Tecnologias e Ferramentas
 
 * **Framework:** [FastAPI](https://fastapi.tiangolo.com/).
-* **ORM:** [SQLAlchemy](https://www.sqlalchemy.org/) / [SQLModel](https://sqlmodel.tiangolo.com/).
+* **ORM:** [SQLAlchemy](https://www.sqlalchemy.org/) 
 * **Banco de Dados:** SQLite (Desenvolvimento) com suporte a migrações via **Alembic**.
 * **Qualidade de Código:** **Ruff** (Linter/Formatter) e **Pytest** (Testes Automatizados).
 * **Gerenciamento de Dependências:** `pyproject.toml`.

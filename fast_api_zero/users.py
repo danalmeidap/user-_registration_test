@@ -1,18 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
-from fast_api_zero.database import get_session
+from fast_api_zero.database import get_user_repository
+from fast_api_zero.deps import get_current_user
 from fast_api_zero.schemas import UserDB, UserSchema
 from fast_api_zero.security import get_password_hash
 from fast_api_zero.user_repository import UserRepository
 
 user_router = APIRouter()
-
-
-def get_user_repository(
-    session: Session = Depends(get_session),
-) -> UserRepository:
-    return UserRepository(session)
 
 
 @user_router.post(
@@ -55,15 +49,25 @@ def get_user_by_id(
 
 
 @user_router.get('/all', response_model=list[UserDB])
-def get_all_users(repository: UserRepository = Depends(get_user_repository)):
+def get_all_users(
+    repository: UserRepository = Depends(get_user_repository),
+    current_user=Depends(get_current_user),
+):
     users = repository.get_all_users()
     return [UserDB(**user.__dict__) for user in users]
 
 
 @user_router.delete('/{user_id}/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
-    user_id: int, repository: UserRepository = Depends(get_user_repository)
+    user_id: int,
+    repository: UserRepository = Depends(get_user_repository),
+    current_user=Depends(get_current_user)
 ):
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Not authorized to delete this user',
+        )
     success = repository.delete_user(user_id)
     if not success:
         raise HTTPException(
@@ -77,7 +81,13 @@ def update_user(
     user_id: int,
     user: UserSchema,
     repository: UserRepository = Depends(get_user_repository),
+    current_user=Depends(get_current_user),
 ):
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Not authorized to update this user',
+        )
     try:
         return repository.update_user(
             user_id=user_id,

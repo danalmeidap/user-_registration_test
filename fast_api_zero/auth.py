@@ -10,8 +10,8 @@ from fast_api_zero.users import get_user_repository
 auth_router = APIRouter()
 
 
-@auth_router.post('/login', response_model=Token)
-def login(
+@auth_router.post('', response_model=Token)
+def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     repository: UserRepository = Depends(get_user_repository),
 ):

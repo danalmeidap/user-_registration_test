@@ -51,3 +51,5 @@ Para utilizar basta clonar o repositório e usar o comando abaixo:
 - [x] Lista Usuários
 - [x] Autentica Usuário
 - [x] Criação de Token por usuário com tempo determinado
+- [x] O usuário só pode modificar ou excluir o próprio usuário
+- [x] Rotas com autenticação

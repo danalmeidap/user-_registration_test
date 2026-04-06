@@ -19,8 +19,7 @@ def test_get_user_repository(session: Session):
 
 def test_read_users_route_is_active(client, token):
     response = client.get(
-        '/users/all',
-        headers={'Authorization': f'Bearer {token}'}
+        '/users/all', headers={'Authorization': f'Bearer {token}'}
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -78,15 +77,17 @@ def test_get_user_by_id_success(client: TestClient):
 
 
 def test_get_all_users_returns_list(client: TestClient, token: str):
-    response = client.get('/users/all',
-     headers={'Authorization': f'Bearer {token}'})
+    response = client.get(
+        '/users/all', headers={'Authorization': f'Bearer {token}'}
+    )
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response.json(), list)
 
 
 def test_delete_user_not_found(client: TestClient, token: str):
-    response = client.delete('/users/999/',
-            headers={'Authorization': f'Bearer {token}'})
+    response = client.delete(
+        '/users/999/', headers={'Authorization': f'Bearer {token}'}
+    )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.json()['detail'] == 'Not authorized to delete this user'
 
@@ -101,12 +102,11 @@ def test_delete_user_success(client: TestClient):
     user_id = resp_create.json()['id']
     login_res = client.post(
         '/token',
-        data={'username': 'tobedeleted', 'password': 'secretpassword'}
+        data={'username': 'tobedeleted', 'password': 'secretpassword'},
     )
     user_token = login_res.json()['access_token']
     response = client.delete(
-        f'/users/{user_id}/',
-        headers={'Authorization': f'Bearer {user_token}'}
+        f'/users/{user_id}/', headers={'Authorization': f'Bearer {user_token}'}
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -116,12 +116,12 @@ def test_update_user_with_token(client: TestClient, token: str):
     update_payload = {
         'username': 'jose_backend',
         'email': 'jose@dev.com',
-        'password': 'nova_senha_123'
+        'password': 'nova_senha_123',
     }
     response = client.put(
         '/users/1',
         json=update_payload,
-        headers={'Authorization': f'Bearer {token}'}
+        headers={'Authorization': f'Bearer {token}'},
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json()['username'] == 'jose_backend'
@@ -132,12 +132,12 @@ def test_update_user_not_found_returns_403(client: TestClient, token: str):
     update_payload = {
         'username': 'jose_backend',
         'email': 'jose@dev.com',
-        'password': 'nova_senha_123'
+        'password': 'nova_senha_123',
     }
     response = client.put(
         f'/users/{user_id_inexistente}',
         json=update_payload,
-        headers={'Authorization': f'Bearer {token}'}
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -151,7 +151,7 @@ def test_repository_delete_user_not_found_directly(session):
 
 
 def test_delete_user_not_found_forced(client, token):
-    user_fake = User(username="admin", email="a@a.com", password="123")
+    user_fake = User(username='admin', email='a@a.com', password='123')
     user_fake.id = 999
 
     def skip_user_check():
@@ -160,8 +160,7 @@ def test_delete_user_not_found_forced(client, token):
     client.app.dependency_overrides[get_current_user] = skip_user_check
 
     response = client.delete(
-        '/users/999/',
-        headers={'Authorization': f'Bearer {token}'}
+        '/users/999/', headers={'Authorization': f'Bearer {token}'}
     )
 
     client.app.dependency_overrides.clear()
@@ -170,7 +169,7 @@ def test_delete_user_not_found_forced(client, token):
 
 
 def test_update_user_not_found_forced(client, token):
-    user_fake = User(username="admin", email="a@a.com", password="123")
+    user_fake = User(username='admin', email='a@a.com', password='123')
     user_fake.id = 999
 
     def skip_user_check():
@@ -180,12 +179,12 @@ def test_update_user_not_found_forced(client, token):
     payload = {
         'username': 'novo_nome',
         'email': 'novo@email.com',
-        'password': 'nova_senha_123'
+        'password': 'nova_senha_123',
     }
     response = client.put(
         '/users/999',
         json=payload,
-        headers={'Authorization': f'Bearer {token}'}
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     client.app.dependency_overrides.clear()

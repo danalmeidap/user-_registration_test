@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -12,8 +14,8 @@ auth_router = APIRouter()
 
 @auth_router.post('', response_model=Token)
 def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    repository: UserRepository = Depends(get_user_repository),
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
 ):
     user = repository.get_user_by_username(form_data.username)
     if user and verify_password(form_data.password, user.password):

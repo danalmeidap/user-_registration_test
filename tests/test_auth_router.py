@@ -7,18 +7,16 @@ from fast_api_zero.token import create_access_token
 def test_get_current_user_no_username_payload(client):
     bad_token = create_access_token(data={})
     response = client.get(
-        '/users/all',
-        headers={'Authorization': f'Bearer {bad_token}'}
+        '/users/all', headers={'Authorization': f'Bearer {bad_token}'}
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json()['detail'] == 'Could not validate credentials'
 
 
 def test_get_current_user_decode_error(client):
-    bad_token = "token_que_nao_segue_o_padrao_jwt"
+    bad_token = 'token_que_nao_segue_o_padrao_jwt'
     response = client.get(
-        '/users/all',
-        headers={'Authorization': f'Bearer {bad_token}'}
+        '/users/all', headers={'Authorization': f'Bearer {bad_token}'}
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -26,8 +24,7 @@ def test_get_current_user_decode_error(client):
 def test_get_current_user_not_found_in_db(client):
     token_ghost = create_access_token(data={'sub': 'usuario_fantasma'})
     response = client.get(
-        '/users/all',
-        headers={'Authorization': f'Bearer {token_ghost}'}
+        '/users/all', headers={'Authorization': f'Bearer {token_ghost}'}
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json()['detail'] == 'Could not validate credentials'

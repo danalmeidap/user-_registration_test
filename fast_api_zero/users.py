@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from fast_api_zero.database import get_user_repository
@@ -13,7 +15,8 @@ user_router = APIRouter()
     '/', status_code=status.HTTP_201_CREATED, response_model=UserDB
 )
 def create_user(
-    user: UserSchema, repository: UserRepository = Depends(get_user_repository)
+    user: UserSchema,
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
 ):
     try:
         new_user = repository.create_user(
@@ -37,7 +40,8 @@ def create_user(
 
 @user_router.get('/{user_id}/', response_model=UserDB)
 def get_user_by_id(
-    user_id: int, repository: UserRepository = Depends(get_user_repository)
+    user_id: int,
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
 ):
     user = repository.get_user_by_id(user_id)
     if user:
@@ -50,7 +54,7 @@ def get_user_by_id(
 
 @user_router.get('/all', response_model=list[UserDB])
 def get_all_users(
-    repository: UserRepository = Depends(get_user_repository),
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
     current_user=Depends(get_current_user),
 ):
     users = repository.get_all_users()
@@ -60,8 +64,8 @@ def get_all_users(
 @user_router.delete('/{user_id}/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
     user_id: int,
-    repository: UserRepository = Depends(get_user_repository),
-    current_user=Depends(get_current_user)
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
+    current_user=Depends(get_current_user),
 ):
     if current_user.id != user_id:
         raise HTTPException(
@@ -80,7 +84,7 @@ def delete_user(
 def update_user(
     user_id: int,
     user: UserSchema,
-    repository: UserRepository = Depends(get_user_repository),
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
     current_user=Depends(get_current_user),
 ):
     if current_user.id != user_id:
